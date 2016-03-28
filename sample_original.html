@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.success_box {
+			display: none;
+			border: solid 1px gray;
+			background: #eee;
+		}
+		.error_box {
+			display: none;
+			border: solid 1px red;
+			background: pink;
+		}
+	</style>
+</head>
+<body>
+<p>this sample returns only one error</p>
+
+<div class="success_box">All of the fields were successfully validated!</div>
+<div class="error_box"></div>
+
+<form name="example_form" action="#" method="POST">
+    <label for="req">Required field:</label>
+    <br>
+    <input name="req" />
+    <br>
+
+    <label for="alphanumeric">Alphanumeric field:</label>
+    <br>
+    <input name="alphanumeric" />
+    <br>
+
+    <label for="password">Password:</label>
+    <br>
+    <input name="password" type="password" />
+    <br>
+
+    <label for="password_confirm">Password Confirmation (match password):</label>
+    <br>
+    <input name="password_confirm" type="password" />
+    <br>
+
+    <label for="email">Email:</label>
+    <br>
+    <input name="email" />
+    <br>
+
+    <label for="minlength">Min length field (min. 8 chars):</label>
+    <br>
+    <input name="minlength" />
+    <br>
+
+    <label for="tos_checkbox">Required checkbox (example: Terms of Service)</label>
+    <br>
+    <input name="tos_checkbox" type="checkbox" value="a" />
+    <input name="tos_checkbox" type="checkbox" value="b" />
+    <br>
+
+    <label for="textarea">Required textarea</label>
+    <br>
+    <textarea name="textarea"></textarea>
+    <br>
+
+    <button class="button gray" type="submit" name="submit">Submit</button>
+</form>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="validate.original.js"></script>
+<script>
+var validator = new FormValidator('example_form', [{
+    name: 'req',
+    display: 'required',
+    rules: 'required'
+}, {
+    name: 'alphanumeric',
+    rules: 'alpha_numeric'
+}, {
+    name: 'password',
+    rules: 'required'
+}, {
+    name: 'password_confirm',
+    display: 'password confirmation',
+    rules: 'required|matches[password]'
+}, {
+    name: 'email',
+    rules: 'valid_email',
+    depends: function() {
+        return Math.random() > .5;
+    }
+}, {
+    name: 'minlength',
+    display: 'min length',
+    rules: 'min_length[8]'
+}, {
+    name: 'tos_checkbox',
+    rules: 'required'
+}, {
+    name: 'textarea',
+    rules: 'required'
+}], function(errors, evt) {
+    if (evt && evt.preventDefault) {
+        evt.preventDefault();
+    } else if (event) {
+        event.returnValue = false;
+    }
+
+    var SELECTOR_ERRORS = $('.error_box'),
+        SELECTOR_SUCCESS = $('.success_box');
+
+    if (errors.length > 0) {
+        SELECTOR_ERRORS.empty();
+
+        for (var i = 0, errorLength = errors.length; i < errorLength; i++) {
+            SELECTOR_ERRORS.append(errors[i].message + '<br />');
+        }
+
+        SELECTOR_SUCCESS.css({ display: 'none' });
+        SELECTOR_ERRORS.fadeIn(200);
+    } else {
+        SELECTOR_ERRORS.css({ display: 'none' });
+        SELECTOR_SUCCESS.fadeIn(200);
+    }
+});
+</script>
+</body>
+</html>
